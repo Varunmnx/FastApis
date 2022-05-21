@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from random import sample
+from fastapi import Body, FastAPI
 
 app = FastAPI()
 
@@ -10,3 +11,7 @@ async def root():
 @app.get("/profile")
 async def profile():
     return {"profile":"Varun Narayanan"}    
+# using dict for data collection
+@app.post("/createposts")
+def post(sample:dict=Body):
+    return {"data":f"{sample['item']}and {sample['content']}"}
