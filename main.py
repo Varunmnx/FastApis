@@ -4,13 +4,16 @@ from typing import Optional
 from fastapi import Body, FastAPI
 from fastapi.params import Body
 from pydantic import BaseModel
+from random import randrange
 app = FastAPI()
 class postparam(BaseModel):
     item: str
     content:str
-    status: True
+    status: bool =True
     rating: Optional[int] =None
+    
 
+temparraydatabase =[{" item ":" Book "," content ":" unruled Books "},{" item ":" Pen "," content ":" Ball pen "}]
 
 @app.get("/")
 async def root():
@@ -21,10 +24,13 @@ async def root():
 async def profile():
     return {"profile":"Varun Narayanan"}    
 # using dict for data collection
+# @app.post("/createposts")
+# def post(sample:dict=Body):
+#     return {"data":f"{sample['item']}and {sample['content']}"}
 @app.post("/createposts")
-def post(sample:dict=Body):
-    return {"data":f"{sample['item']}and {sample['content']}"}
-@app.post("/createpost")
 def post(postings:postparam):
-    return {"data":f"{postings.item} and content of that is {postings.content}"}
+    asdic = postings.dict()
+    asdic['id'] = randrange(0,100000)
+    temparraydatabase.append(asdic)
+    return {"data": temparraydatabase}
         
