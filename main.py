@@ -14,7 +14,7 @@ class postparam(BaseModel):
     rating: Optional[int] =None
     
 
-temparraydatabase =[{" item ":" Book "," content ":" unruled Books ","id":1},{" item ":" Pen "," content ":" Ball pen "}]
+temparraydatabase =[{" item ":" Book "," content ":" unruled Books ","id":1},{" item ":" Pen "," content ":" Ball pen ","id":2}]
 def get_post(id):
     for element in temparraydatabase:
         if element['id'] == id:
@@ -37,7 +37,7 @@ async def root():
 
 @app.get("/profile")
 async def profile():
-    return {"profile":"Varun Narayanan"}    
+    return {"profile":temparraydatabase}    
 # using dict for data collection
 # @app.post("/createposts")
 # def post(sample:dict=Body):
@@ -57,7 +57,7 @@ def get_posts(id:int):
     if  post == None:
         raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = f"id:{id} was not found.Thankyou for searching" )
     return {"posts detail": post}
-    
+
 # delete post is must
 @app.delete("/profile/{id}",status_code=status.HTTP_204_NO_CONTENT)
 def delete_posts(id:int):
@@ -66,4 +66,14 @@ def delete_posts(id:int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"The element with such id does not exist")
     temparraydatabase.pop(location)
     return Response(status_code= status.HTTP_204_NO_CONTENT)   
-        
+
+
+@app.put("/profile/{id}")
+def update_posts(id:int,post:postparam):
+    index = find_index_post(id)
+    if index==None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"post with id {id} donot exist")   
+    post_dict =post.dict()
+    post_dict['id'] = id
+    temparraydatabase[index] = post_dict
+    return {"data":post_dict}
