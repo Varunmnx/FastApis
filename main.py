@@ -6,6 +6,7 @@ from random import randrange
 
 # from requests import Response
 app = FastAPI()
+
 class postparam(BaseModel):
     item: str
     content:str
@@ -19,8 +20,14 @@ def get_post(id):
         if element['id'] == id:
              return element
         else:
-            return None     
-
+            return None   
+#returning the index of the element in the list to pop it from the list              
+def find_index_post(id):
+    for i,j in enumerate(temparraydatabase):
+        if j['id'] == id:
+            return i
+        else:
+            return None    
 
 
 @app.get("/")
@@ -47,6 +54,16 @@ def post(postings:postparam):
 @app.get("/profile/{id}")
 def get_posts(id:int):
     post = get_post(id)
-    if not post:
+    if  post == None:
         raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = f"id:{id} was not found.Thankyou for searching" )
     return {"posts detail": post}
+    
+# delete post is must
+@app.delete("/profile/{id}",status_code=status.HTTP_204_NO_CONTENT)
+def delete_posts(id:int):
+    location = find_index_post(id)
+    if location == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"The element with such id does not exist")
+    temparraydatabase.pop(location)
+    return Response(status_code= status.HTTP_204_NO_CONTENT)   
+        
