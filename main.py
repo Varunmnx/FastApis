@@ -65,8 +65,9 @@ def post(postings:postparam):
 
 @app.get("/profile/{id}")
 def get_posts(id:int):
-    post = get_post(id)
-    if  post == None:
+    cursor.execute("""SELECT * FROM "Products" WHERE id = %s ;""",(str(id)))
+    post=cursor.fetchone()
+    if not post:
         raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = f"id:{id} was not found.Thankyou for searching" )
     return {"posts detail": post}
 
