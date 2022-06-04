@@ -10,11 +10,10 @@ import time
 app = FastAPI()
 
 class postparam(BaseModel):
-    item: str
+    title: str
     content:str
-    status: bool =True
-    rating: Optional[int] =None
-
+    Published: bool =True
+    
 while True:
     try:
         conn = psycopg2.connect(host= 'localhost',database='FastApi',user='postgres',password='2580',cursor_factory=RealDictCursor)
@@ -49,21 +48,20 @@ async def root():
     return {"message":"this is a sample fastapi"}
     #sample
 
-@app.get("/profile")
+@app.get("/posts")
 async def profile():
-    return {"profile":temparraydatabase}    
-# using dict for data collection
-# @app.post("/createposts")
-# def post(sample:dict=Body):
-#     return {"data":f"{sample['item']}and {sample['content']}"}
+    cursor.execute("""SELECT * FROM "Products"; """)
+    posts = cursor.fetchall()
+    return {"posts":posts}   
+
+
 
 #post a data and giving unique id to each of the element saved
 @app.post("/createposts")
 def post(postings:postparam):
-    asdic = postings.dict()
-    asdic['id'] = randrange(0,100000)
-    temparraydatabase.append(asdic)
-    return {"data": temparraydatabase}
+    cursor.execute("""INSERT INTO "Products" (title,content,published) VALUES(%s,%s,%s)""",(postings.title,postings.content,postings.Published))
+    conn.commit()
+    return {"created posts":"created posts"}
 
 @app.get("/profile/{id}")
 def get_posts(id:int):
