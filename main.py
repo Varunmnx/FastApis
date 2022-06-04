@@ -3,7 +3,9 @@ from fastapi import Body, FastAPI,Response,status,HTTPException
 from fastapi.params import Body
 from pydantic import BaseModel
 from random import randrange
-
+import psycopg2
+from psycopg2.extras import RealDictCursor
+import time
 # from requests import Response
 app = FastAPI()
 
@@ -12,6 +14,18 @@ class postparam(BaseModel):
     content:str
     status: bool =True
     rating: Optional[int] =None
+
+while True:
+    try:
+        conn = psycopg2.connect(host= 'localhost',database='FastApi',user='postgres',password='2580',cursor_factory=RealDictCursor)
+        cursor = conn.cursor()
+        print('Database connection Established!!')
+        break
+    except Exception as error:
+        print("connection to database failed !!")
+        print('Error: ',error)
+        time.sleep(2)
+
     
 
 temparraydatabase =[{" item ":" Book "," content ":" unruled Books ","id":1},{" item ":" Pen "," content ":" Ball pen ","id":2}]
