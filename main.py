@@ -1,3 +1,4 @@
+from turtle import st
 from typing import Optional
 from fastapi import Body, FastAPI,Response,status,HTTPException
 from fastapi.params import Body
@@ -74,19 +75,20 @@ def get_posts(id:int):
 # delete post is must
 @app.delete("/profile/{id}",status_code=status.HTTP_204_NO_CONTENT)
 def delete_posts(id:int):
-    location = find_index_post(id)
-    if location == None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"The element with such id does not exist")
-    temparraydatabase.pop(location)
+    cursor.execute("""DELETE FROM "Products" WHERE id = %s returning *""",(str(id),))
+    delete_post=cursor.fetchone()
+    conn.commit()
+    if delete_post == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"The element with {id} id does not exist")
     return Response(status_code= status.HTTP_204_NO_CONTENT)   
 
 
 @app.put("/profile/{id}")
 def update_posts(id:int,post:postparam):
-    index = find_index_post(id)
-    if index==None:
+    cursor.execute("""UPDATE "Products" SET title=%s ,content=%s ,published=%s WHERE id=%s RETURNING *""",(post.title,post.content,post.Published,str(id)))
+    updated_data = cursor.fetchone()
+    conn.commit()
+    if updated_data==None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"post with id {id} donot exist")   
-    post_dict =post.dict()
-    post_dict['id'] = id
-    temparraydatabase[index] = post_dict
-    return {"data":post_dict}
+  
+    return {"data":updated_data}
