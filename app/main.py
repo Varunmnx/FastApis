@@ -28,22 +28,6 @@ while True:
 
     
 
-temparraydatabase =[{" item ":" Book "," content ":" unruled Books ","id":1},{" item ":" Pen "," content ":" Ball pen ","id":2}]
-def get_post(id):
-    for element in temparraydatabase:
-        if element['id'] == id:
-             return element
-        else:
-            return None   
-#returning the index of the element in the list to pop it from the list              
-def find_index_post(id):
-    for i,j in enumerate(temparraydatabase):
-        if j['id'] == id:
-            return i
-        else:
-            return None    
-
-
 @app.get("/")
 async def root():
     return {"message":"this is a sample fastapi"}
