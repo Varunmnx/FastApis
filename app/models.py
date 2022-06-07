@@ -1,3 +1,4 @@
+from email.policy import default
 from tokenize import String
 from sqlalchemy import Column,Integer,String,Boolean
 from sqlalchemy.sql.expression import null
@@ -9,4 +10,4 @@ class Post(Base):
     id = Column(Integer,primary_key= True,nullable=False)
     name = Column(String,nullable =False)
     content = Column(String,nullable = False)
-    publish
+    published = Column(Boolean,default =False)

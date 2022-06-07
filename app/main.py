@@ -7,6 +7,10 @@ from random import randrange
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
+#made from sqlalchemy
+from . import  models
+from .database import engine
+
 # from requests import Response
 app = FastAPI()
 
