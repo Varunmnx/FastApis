@@ -1,5 +1,5 @@
 
-from webbrowser import get
+# from webbrowser import get
 from fastapi import  Depends, FastAPI,Response,status,HTTPException
 
 from pydantic import BaseModel
