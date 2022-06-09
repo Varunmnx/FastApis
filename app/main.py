@@ -10,6 +10,16 @@ import time
 from sqlalchemy.orm import Session
 from database import Base,SessionLocal
 from database import get_db
+
+#create db
+
+from database import Base,engine
+from models import Item
+
+# print("Creating database ....")
+
+Base.metadata.create_all(engine)
+
 # from requests import Response
 app = FastAPI()
 # db = SessionLocal()
