@@ -1,20 +1,30 @@
-from turtle import st
-from typing import Optional
-from fastapi import Body, FastAPI,Response,status,HTTPException
-from fastapi.params import Body
+
+from webbrowser import get
+from fastapi import  Depends, FastAPI,Response,status,HTTPException
+
 from pydantic import BaseModel
-from random import randrange
+
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
+from sqlalchemy.orm import Session
+from database import Base,SessionLocal
+from database import get_db
 # from requests import Response
 app = FastAPI()
+# db = SessionLocal()
+get_db()
+
 
 class postparam(BaseModel):
+    id:int
     title: str
     content:str
-    Published: bool =True
-    
+    Published: bool
+    class Config:
+        orm_mode =True
+
+
 while True:
     try:
         conn = psycopg2.connect(host= 'localhost',database='FastApi',user='postgres',password='2580',cursor_factory=RealDictCursor)
@@ -28,8 +38,8 @@ while True:
 
     
 
-@app.get("/")
-async def root():
+@app.get("/sql")
+async def root(db:Session=Depends(get_db)):
     return {"message":"this is a sample fastapi"}
     #sample
 
@@ -50,7 +60,7 @@ def post(postings:postparam):
 
 @app.get("/profile/{id}")
 def get_posts(id:int):
-    cursor.execute("""SELECT * FROM "Products" WHERE id = %s ;""",(str(id)))
+    cursor.execute("""SELECT * FROM "Products" WHERE id = %s ;""",(str(id),))
     post=cursor.fetchone()
     if not post:
         raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = f"id:{id} was not found.Thankyou for searching" )
