@@ -1,5 +1,6 @@
 
 # from webbrowser import get
+# from unicodedata import name
 from fastapi import  Depends, FastAPI,Response,status,HTTPException
 
 from pydantic import BaseModel
@@ -50,7 +51,8 @@ while True:
 
 @app.get("/sql")
 async def root(db:Session=Depends(get_db)):
-    return {"message":"this is a sample fastapi"}
+    ell =db
+    return {"message": ell}
     #sample
 
 @app.get("/posts")
