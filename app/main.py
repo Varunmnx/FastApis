@@ -13,7 +13,7 @@ from database import Base,SessionLocal
 from database import get_db
 
 #create db
-
+import models
 from database import Base,engine
 from models import Item
 
@@ -51,7 +51,7 @@ while True:
 
 @app.get("/sql")
 async def root(db:Session=Depends(get_db)):
-    ell =db
+    ell =db.query(models.Item).all()[0]
     return {"message": ell}
     #sample
 
